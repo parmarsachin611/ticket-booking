@@ -8,16 +8,16 @@ public class User {
 
     private String password;
 
-    private String hashPassword;
+    private String hashedPassword;
 
     private List<Ticket> ticketsBooked;
 
     private String userId;
 
-    public User(String name, String password, String hashPassword, List<Ticket> ticketsBooked, String userId) {
+    public User(String name, String password, String hashedPassword, List<Ticket> ticketsBooked, String userId) {
         this.name = name;
         this.password = password;
-        this.hashPassword = hashPassword;
+        this.hashedPassword = hashedPassword;
         this.ticketsBooked = ticketsBooked;
         this.userId = userId;
     }
@@ -32,8 +32,8 @@ public class User {
         return password;
     }
 
-    public String getHashPassword() {
-        return hashPassword;
+    public String getHashedPassword() {
+        return hashedPassword;
     }
 
     public List<Ticket> getTicketsBooked() {
@@ -52,8 +52,8 @@ public class User {
         this.password = password;
     }
 
-    public void setHashPassword(String hashPassword) {
-        this.hashPassword = hashPassword;
+    public void setHashedPassword(String hashedPassword) {
+        this.hashedPassword = hashedPassword;
     }
 
     public void setTicketsBooked(List<Ticket> ticketsBooked) {
