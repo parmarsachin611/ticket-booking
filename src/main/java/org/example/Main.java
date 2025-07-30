@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.UUID;
 
-import static java.lang.System.exit;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
@@ -40,6 +39,7 @@ public class Main {
             System.out.println("6. Cancel my Booking");
             System.out.println("7. Exit the App");
             try {
+                System.out.print("Enter your choice: ");
                 option = scanner.nextInt();
             } catch (Exception e) {
                 System.out.println("Incorrect input, please try again.");
@@ -52,8 +52,12 @@ public class Main {
                     String username = scanner.next();
                     System.out.println("Enter password to signup: ");
                     String password = scanner.next();
-                    User userToSignUp = new User(username, password, UserServiceUtil.hashPassword(password), new ArrayList<Ticket>(), UUID.randomUUID().toString());
-                    userBookingService.signUp(userToSignUp);
+                    try {
+                        User userToSignUp = new User(username, password, UserServiceUtil.hashPassword(password), new ArrayList<Ticket>(), UUID.randomUUID().toString());
+                        userBookingService.signUp(userToSignUp);
+                    } catch (RuntimeException e) {
+                        System.out.println(e);
+                    }
                     break;
                 case 2:
                     System.out.println("Enter username to login: ");

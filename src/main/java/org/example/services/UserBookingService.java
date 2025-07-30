@@ -19,7 +19,7 @@ public class UserBookingService {
 
     private static final String USER_PATH = "src/main/java/org/example/localDb/users.json";
 
-    private List<User> userList;
+    private List<User> userList = new ArrayList<>();
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -53,6 +53,7 @@ public class UserBookingService {
 
     public Boolean signUp(User user1) {
         try{
+            System.out.println(user1);
             userList.add(user1);
             saveUserListToFile();
             return Boolean.TRUE;

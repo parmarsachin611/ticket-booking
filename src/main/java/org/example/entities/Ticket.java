@@ -1,7 +1,13 @@
 package org.example.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+
 import java.util.Date;
 
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Ticket {
 
     private String ticketId;
@@ -15,6 +21,8 @@ public class Ticket {
     private Date dateOfTravel;
 
     private Train train;
+
+    public Ticket() {}
 
     public Ticket(String ticketId, String userId, String source, String destination, Date dateOfTravel, Train train) {
         this.ticketId = ticketId;
