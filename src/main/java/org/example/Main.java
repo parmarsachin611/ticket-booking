@@ -1,12 +1,15 @@
 package org.example;
 
 import org.example.entities.Ticket;
+import org.example.entities.Train;
 import org.example.entities.User;
 import org.example.services.UserBookingService;
 import org.example.utils.UserServiceUtil;
 
+import javax.xml.transform.Source;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.UUID;
 
@@ -30,7 +33,7 @@ public class Main {
         }
 
         while (option < 7) {
-            System.out.println("Choose option");
+            System.out.println("welcome!!!");
             System.out.println("1. Sign up");
             System.out.println("2. Login");
             System.out.println("3. Fetch Bookings");
@@ -55,6 +58,7 @@ public class Main {
                     try {
                         User userToSignUp = new User(username, password, UserServiceUtil.hashPassword(password), new ArrayList<Ticket>(), UUID.randomUUID().toString());
                         userBookingService.signUp(userToSignUp);
+                        System.out.println("User Created");
                     } catch (RuntimeException e) {
                         System.out.println(e);
                     }
@@ -67,6 +71,7 @@ public class Main {
                     User userToLogin = new User(usernameToLogin, passwordLogin, UserServiceUtil.hashPassword(passwordLogin), new ArrayList<Ticket>(), UUID.randomUUID().toString());
                     try{
                         userBookingService = new UserBookingService(userToLogin);
+                        System.out.println("User logged in");
                     } catch (IOException e) {
                         return;
                     }
@@ -77,7 +82,14 @@ public class Main {
                     break;
                 case 4:
                     System.out.println("Search Train");
+                    System.out.print("Enter Source: ");
+                    String source = scanner.next();
+                    System.out.print("Enter Destination: ");
+                    String destination = scanner.next();
+                    List<Train> trains = UserBookingService.getTrains(source, destination);
                     break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + option);
             }
 
         }

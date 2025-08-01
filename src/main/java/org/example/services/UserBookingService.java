@@ -2,16 +2,14 @@ package org.example.services;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.example.entities.Ticket;
+import org.example.entities.Train;
 import org.example.entities.User;
 import org.example.utils.UserServiceUtil;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 public class UserBookingService {
 
@@ -19,7 +17,7 @@ public class UserBookingService {
 
     private static final String USER_PATH = "src/main/java/org/example/localDb/users.json";
 
-    private List<User> userList = new ArrayList<>();
+    private List<User> userList;
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -36,10 +34,14 @@ public class UserBookingService {
 
     }
 
-    public List<User> loadUsers() throws IOException{
+    public static List<Train> getTrains(String source, String destination) {
+        TrainService trainService = new TrainService();
+        return trainService.searchTrains(source,destination);
+    }
 
-        File users = new File(USER_PATH);
-        return objectMapper.readValue(users, new TypeReference<List<User>>() {});
+    public void loadUsers() throws IOException{
+
+        userList = objectMapper.readValue(new File(USER_PATH), new TypeReference<List<User>>() {});
 
     }
 
