@@ -75,6 +75,8 @@ public class UserBookingService {
         }).findFirst();
         if(userFetched.isPresent()) {
             userFetched.get().printTicket();
+        } else {
+            System.out.println("No ticket booked");
         }
     }
 

@@ -78,7 +78,12 @@ public class Main {
                     break;
                 case 3:
                     System.out.println("Fetching your bookings....");
-                    userBookingService.fetchBookings();
+                    try {
+                        userBookingService.fetchBookings();
+                    } catch (Exception e){
+                        System.out.println(e);
+                        System.out.println("Please Login");
+                    }
                     break;
                 case 4:
                     System.out.println("Search Train");
