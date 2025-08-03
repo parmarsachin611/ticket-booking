@@ -17,15 +17,9 @@ public class TrainService {
 
     ObjectMapper objectMapper = new ObjectMapper();
 
-    public TrainService() {
-
-    }
-
-    public void loadTrains() throws IOException {
-
+    public TrainService() throws IOException {
         trainList = objectMapper.readValue(new File(TRAIN_PATH), new TypeReference<List<Train>>() {
         });
-
     }
 
     public List<Train> searchTrains(String source, String destination) {
@@ -40,5 +34,9 @@ public class TrainService {
 
         return sourceIndex != -1 && destinationIndex != -1 && sourceIndex < destinationIndex;
 
+    }
+
+    public void addTrain(Train train) {
+        
     }
 }

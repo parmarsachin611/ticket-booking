@@ -34,7 +34,7 @@ public class UserBookingService {
 
     }
 
-    public static List<Train> getTrains(String source, String destination) {
+    public static List<Train> getTrains(String source, String destination) throws IOException {
         TrainService trainService = new TrainService();
         return trainService.searchTrains(source,destination);
     }
@@ -49,7 +49,6 @@ public class UserBookingService {
         Optional<User> foundUser = userList.stream().filter(user1 -> {
             return user1.getName().equals(user.getName())  && UserServiceUtil.checkPassword(user.getPassword(), user1.getHashedPassword());
         }).findFirst();
-
         return foundUser.isPresent();
     }
 
@@ -70,14 +69,36 @@ public class UserBookingService {
     }
 
     public void fetchBookings() {
+        System.out.println(user.getName());
         Optional<User> userFetched = userList.stream().filter(user1 -> {
             return  user1.getName().equals(user.getName()) && UserServiceUtil.checkPassword(user.getPassword(), user1.getHashedPassword());
         }).findFirst();
         if(userFetched.isPresent()) {
             userFetched.get().printTicket();
-        } else {
-            System.out.println("No ticket booked");
         }
     }
 
+    public List<List<Integer>> fetchSeats(Train trainSelectedForBooking) {
+        return trainSelectedForBooking.getSeats();
+    }
+
+    public Boolean bookTrainSeat(Train trainSelectedForBooking, int row, int col) {
+        try {
+            TrainService trainService = new TrainService();
+            List<List<Integer>> seats = trainSelectedForBooking.getSeats();
+            if (row >= 0 && row < seats.size() && col >= 0 && col < seats.get(row).size()) {
+                if(seats.get(row).get(col) == 0) {
+                    seats.get(row).set(col, 1);
+                    trainSelectedForBooking.setSeats(seats);
+                    trainService.addTrain(trainSelectedForBooking);
+                } else {
+                    return false;
+                }
+            } else {
+                return false; // Invalid Seats selected
+            }
+        } catch (IOException e) {
+            return Boolean.FALSE;
+        }
+    }
 }

@@ -8,16 +8,14 @@ import org.example.utils.UserServiceUtil;
 
 import javax.xml.transform.Source;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-import java.util.UUID;
+import java.sql.Time;
+import java.util.*;
 
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
         System.out.println("Running Ticket Booking System:");
         UserBookingService userBookingService;
@@ -32,7 +30,7 @@ public class Main {
             return;
         }
 
-        while (option < 7) {
+        while (option <= 7) {
             System.out.println("welcome!!!");
             System.out.println("1. Sign up");
             System.out.println("2. Login");
@@ -41,6 +39,7 @@ public class Main {
             System.out.println("5. Book a Seat");
             System.out.println("6. Cancel my Booking");
             System.out.println("7. Exit the App");
+            Train trainSelectedForBooking = new Train();
             try {
                 System.out.print("Enter your choice: ");
                 option = scanner.nextInt();
@@ -69,11 +68,15 @@ public class Main {
                     System.out.println("Enter password to login: ");
                     String passwordLogin = scanner.next();
                     User userToLogin = new User(usernameToLogin, passwordLogin, UserServiceUtil.hashPassword(passwordLogin), new ArrayList<Ticket>(), UUID.randomUUID().toString());
-                    try{
+                    try {
                         userBookingService = new UserBookingService(userToLogin);
-                        System.out.println("User logged in");
+                        if (userBookingService.loginUser()) {
+                            System.out.println("User logged in");
+                        } else {
+                            System.out.println("Please try again");
+                        }
                     } catch (IOException e) {
-                        return;
+                        throw new RuntimeException(e);
                     }
                     break;
                 case 3:
@@ -81,7 +84,6 @@ public class Main {
                     try {
                         userBookingService.fetchBookings();
                     } catch (Exception e){
-                        System.out.println(e);
                         System.out.println("Please Login");
                     }
                     break;
@@ -90,10 +92,56 @@ public class Main {
                     System.out.print("Enter Source: ");
                     String source = scanner.next();
                     System.out.print("Enter Destination: ");
-                    String destination = scanner.next();
-                    List<Train> trains = UserBookingService.getTrains(source, destination);
+                    try {
+                        String destination = scanner.next();
+                        List<Train> trains = UserBookingService.getTrains(source, destination);
+                        int index = 1;
+                        for (Train train : trains) {
+                            System.out.println(index+". Train Id: " + train.getTrainId());
+                            for (Map.Entry<String, Time> entry : train.getStationTimes().entrySet()) {
+                                System.out.println("Station " +  entry.getKey() + " Time: " + entry.getValue());
+                            }
+                        }
+                        System.out.println("select a train by typing 1,2,3.....");
+                        int trainSelection = scanner.nextInt();
+                        if (trainSelection-1 <= trains.size()) {
+                            trainSelectedForBooking = trains.get(trainSelection-1);
+                            System.out.println("Train Selected, please proceed with booking...");
+                        } else {
+                            System.out.println("Invalid Input, please try again..");
+                        }
+
+                    } catch (RuntimeException e) {
+                        throw new RuntimeException(e);
+                    }
+                    break;
+                case 5:
+                    System.out.println("Select seat out of these seats...");
+                    List<List<Integer>> seats = userBookingService.fetchSeats(trainSelectedForBooking);
+                    for (List<Integer> row: seats) {
+                        for (Integer val : row) {
+                            System.out.print(val+ " ");
+                        }
+                        System.out.println();
+                    }
+                    System.out.println("select the seats by typing the row and column...");
+                    System.out.println("Enter row: ");
+                    int row = scanner.nextInt();
+                    System.out.println("Enter column: ");
+                    int col = scanner.nextInt();
+                    System.out.println("Booking your ticket...");
+                    try {
+                        Boolean booked = userBookingService.bookTrainSeat(trainSelectedForBooking, row, col);
+                    } catch (RuntimeException e) {
+                        System.out.println("Please Login...");
+                    }
+                    break;
+                case 6:
+                    break;
+                case 7:
                     break;
                 default:
+                    System.out.println("Invalid Input....");
                     throw new IllegalStateException("Unexpected value: " + option);
             }
 
